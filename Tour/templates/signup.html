@@ -1,0 +1,115 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign Up</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body.my-login-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: rgba(247, 249, 251, 0.8); /* Make the background slightly transparent */
+            background-image: url('{% static 'files/bgim.jpg' %}');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .card-wrapper {
+            width: 400px;
+        }
+
+        /* Customize form layout */
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex-basis: calc(50% - 10px);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body class="my-login-page">
+<section class="h-100">
+    <div class="container h-100">
+        <div class="row justify-content-md-center align-items-center h-100">
+            <div class="card-wrapper">
+                <div class="card fat" style="background-color: rgba(255, 255, 255, 0.8);">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4 text-center">Signup Form</h2>
+                        <form method="POST" class="my-login-validation" action="{% url 'signup' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% if errors %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                    {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name</label>
+                                    <input id="fullName" type="text" class="form-control" name="full_name" required
+                                           autofocus value="{{ values.full_name|default:'' }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input id="username" type="text" class="form-control" name="username" required
+                                           value="{{ values.username|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input id="password" type="password" class="form-control" name="password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">E-Mail Address</label>
+                                    <input id="email" type="email" class="form-control" name="email" required
+                                           value="{{ values.email|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="phoneNumber">Phone Number</label>
+                                    <input id="phoneNumber" type="tel" class="form-control" name="phone_number"
+                                           required value="{{ values.phone_number|default:'' }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="address">Address</label>
+                                    <input id="address" type="text" class="form-control" name="address" required
+                                           value="{{ values.address|default:'' }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="profilePicture">Profile Picture</label>
+                                <input id="profilePicture" type="file" class="form-control" name="profile_picture">
+                            </div>
+                            <div class="form-group m-0">
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    Signup
+                                </button>
+                            </div>
+                            <div class="form-group mt-4 text-center">
+                                Already have an account? <a href="{% url 'login' %}">Login</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

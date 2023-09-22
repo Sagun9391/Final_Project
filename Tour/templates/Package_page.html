@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load wishlist %}
+{% load custom_filter %}
+    <!-- Bootstrap CSS Link -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Custom CSS to reduce image size and card spacing -->
+    <style>
+        .card-img-top {
+            max-height: 150px; /* Adjust the max height as needed */
+            width: auto;
+        }
+
+        /* Reduce card size and add margin */
+        .custom-card {
+            margin-bottom: 20px; /* Add spacing between cards */
+        }
+    </style>
+
+    <!-- Card Section -->
+    <div class="container mt-5">
+        <div class="row">
+            {% for package in Packages %}
+                <div class="col-md-3 mb-4 custom-card" id="{{package.id}}">
+                    <div class="card">
+                        <img src="{{ package.image.url }}" class="card-img-top" alt="{{ package.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title"><b>Place:</b>{{ package.name }}</h5>
+                            <p class="card-text"><b>Price:</b>{{ package.price|currency }}</p>
+                            <p class="card-text"><b>Description:</b>{{ package.description }}</p>
+                            {% if package|is_in_wishlist:request.session.wishlist %}
+                            <div class="card-footer row nu-gutters">
+                        <div class="text-center col">Package added to your wishlist </div>
+                    </div>
+                            {% else %}
+                            <!-- Update the form action to point to 'wishlist' URL -->
+                            <form action="{% url 'Package_page' %}#{{ package.id }}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="package" value="{{ package.id }}">
+                                <input type="submit" class="btn btn-primary" value="Add to Wishlist">
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <!-- Bootstrap JS Script -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+{% endblock %}

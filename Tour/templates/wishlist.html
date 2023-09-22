@@ -1,0 +1,45 @@
+<!-- wishlist.html template -->
+{% extends 'base.html' %}
+
+{% block content %}
+{% load custom_filter %}
+    <!-- Bootstrap CSS Link -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <div class="container mt-5">
+       <div class="border rounded p-4 m-4">
+           <p class="display-4 text-center"><b>Your Wishlist</b></p>
+           <table class="table">
+               <thead>
+               <tr>
+                   <th>Sno.</th>
+                   <th>Package</th>
+                   <th>Price</th>
+                   <th>Image</th>
+                   <th>Status</th>
+               </tr>
+               </thead>
+               <tbody>
+               {% for package in packages %}
+               <tr>
+                   <td>{{forloop.counter}}</td>
+                   <td>{{ package.name }}</td>
+                   <td>{{ package.price|currency }}</td>
+                   <td><img src="{{ package.image.url }}" alt="{{ package.name }}" style="max-width: 50px;"></td>
+                   <td class="text-center align-middle">
+                       {% if package.id in bookings %}
+                           Booked
+                       {% else %}
+                           <a href="{% url 'Details' package.id %}" class="btn btn-primary">Details</a>
+                       {% endif %}
+                   </td>
+               </tr>
+               {% endfor %}
+               </tbody>
+           </table>
+       </div>
+    </div>
+
+    <!-- Bootstrap JS Script -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+{% endblock %}

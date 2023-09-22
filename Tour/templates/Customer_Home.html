@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <!-- Background Video & Header -->
+    <div class="banner">
+        {% load static %}
+        <video src="{% static 'files/bgvid.mp4' %}" type="video/mp4" autoplay muted loop></video>
+
+        <!-- Header -->
+        <div class="title">
+            <h1>Welcome To</h1>
+            <h2>Tourism Management System</h2>
+            <p>Plan your trip with us and travel around the world with the most affordable packages!</p>
+        </div>
+    </div>
+{% endblock %}
