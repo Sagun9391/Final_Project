@@ -3,7 +3,8 @@ from Tour.models.Contact_us import Contact_Us
 from django.views import View
 from django.contrib import messages
 
-class contactus(View):
+
+class Contact_Us(View):
 
     def post(self, request):
         name = request.POST.get('name')

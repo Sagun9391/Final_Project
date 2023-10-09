@@ -20,8 +20,8 @@
         <img src="{% static 'files/logo.png' %}" class="logo" alt="Logo" title="FirstFlight Travels">
         <ul class="navbar">
             <li>
-                <a href="#home">Home</a>
-                <a href="#locations">Locations</a>
+                <a href="{% url 'Customer_Home' %}">Home</a>
+                <a href="{% url 'Location' %}">Locations</a>
                 <a href="{% url 'wishlist' %}">Wishlist</a>
                 <a href="{% url 'Package_page' %}">Packages</a>
                 <a href="{% url 'my_booking' %}">My Bookings</a>

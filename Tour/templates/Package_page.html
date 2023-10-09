@@ -4,53 +4,201 @@
 
 {% load wishlist %}
 {% load custom_filter %}
-    <!-- Bootstrap CSS Link -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<!-- Bootstrap CSS Link -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
-    <!-- Custom CSS to reduce image size and card spacing -->
-    <style>
-        .card-img-top {
-            max-height: 150px; /* Adjust the max height as needed */
-            width: auto;
-        }
+<!-- Font Awesome CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" rel="stylesheet">
 
-        /* Reduce card size and add margin */
-        .custom-card {
-            margin-bottom: 20px; /* Add spacing between cards */
-        }
-    </style>
+<!-- Custom CSS -->
+<style>
+    .card {
+        border: none;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        border-radius: 15px;
+        overflow: hidden;
+    }
 
-    <!-- Card Section -->
-    <div class="container mt-5">
-        <div class="row">
-            {% for package in Packages %}
-                <div class="col-md-3 mb-4 custom-card" id="{{package.id}}">
-                    <div class="card">
-                        <img src="{{ package.image.url }}" class="card-img-top" alt="{{ package.name }}">
-                        <div class="card-body">
-                            <h5 class="card-title"><b>Place:</b>{{ package.name }}</h5>
-                            <p class="card-text"><b>Price:</b>{{ package.price|currency }}</p>
-                            <p class="card-text"><b>Description:</b>{{ package.description }}</p>
-                            {% if package|is_in_wishlist:request.session.wishlist %}
-                            <div class="card-footer row nu-gutters">
-                        <div class="text-center col">Package added to your wishlist </div>
-                    </div>
-                            {% else %}
-                            <!-- Update the form action to point to 'wishlist' URL -->
-                            <form action="{% url 'Package_page' %}#{{ package.id }}" method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="package" value="{{ package.id }}">
-                                <input type="submit" class="btn btn-primary" value="Add to Wishlist">
-                            </form>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .custom-card {
+        height: 100%;
+    }
+
+    .wishlist-btn {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .wishlist-btn:hover {
+        background-color: #218838;
+    }
+
+    .heart-icon {
+        color: #dc3545;
+    }
+
+    .card-footer {
+        background-color: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+        padding: 10px;
+        border-radius: 0 0 15px 15px;
+    }
+
+    .wishlist-status {
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    /* Custom Styling for Title and Price */
+    .card-title {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .card-price {
+        font-size: 1.2rem;
+        color: #007bff;
+        margin-bottom: 5px;
+    }
+
+    .card-description {
+        font-size: 1rem;
+        color: #6c757d;
+    }
+
+    /* Styles for the search bar and pagination */
+    .search-container {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .search-form {
+        display: flex;
+        align-items: center;
+    }
+
+    .search-bar {
+        margin-right: 10px;
+    }
+
+    .search-button {
+        min-width: 100px;
+    }
+
+    .pagination {
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination a {
+        color: #007bff;
+        padding: 8px 16px;
+        text-decoration: none;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    .pagination a:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .pagination .active {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    /* Container for the entire card section */
+    .card-container {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<!-- Card Section -->
+<div class="container mt-5 card-container">
+    <!-- Search Bar -->
+    <div class="search-container">
+        <form class="search-form" action="{% url 'Package_page' %}" method="get">
+            <input class="form-control search-bar" type="search" placeholder="Search" aria-label="Search" name="search" value="{{ search_query }}">
+            <button class="btn btn-outline-success search-button" type="submit">Search</button>
+        </form>
     </div>
 
+    <!-- Card Grid -->
+    <div class="row">
+        {% for package in Packages %}
+        <div class="col-md-4 mb-4">
+            <div class="card custom-card" id="{{ package.id }}">
+                <img src="{{ package.image.url }}" class="card-img-top" alt="{{ package.name }}">
+                <div class="card-body">
+                    <h5 class="card-title"><b>{{ package.name }}</b></h5>
+                    <p class="card-price"><b>Price:</b> {{ package.price|currency }}</p>
+                    <p class="card-description"><b>Description:</b> {{ package.description }}</p>
+                </div>
+                <div class="card-footer">
+                    {% if package|is_in_wishlist:request.session.wishlist %}
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="wishlist-status">
+                            <i class="fas fa-heart heart-icon"></i> Added to Wishlist
+                        </div>
+                    </div>
+                    {% else %}
+                    <form action="{% url 'Package_page' %}?page={{ Packages.number }}#{{ package.id }}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="package" value="{{ package.id }}">
+                        <button type="submit" class="btn btn-primary wishlist-btn">
+                            <i class="fas fa-heart"></i> Add to Wishlist
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 
-    <!-- Bootstrap JS Script -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <!-- Pagination -->
+    <div class="pagination">
+        <span class="step-links">
+            {% if Packages.has_previous %}
+                <a href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}">&laquo; first</a>
+                <a href="?page={{ Packages.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ Packages.number }} of {{ Packages.paginator.num_pages }}.
+            </span>
+
+            {% if Packages.has_next %}
+                <a href="?page={{ Packages.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">next</a>
+                <a href="?page={{ Packages.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+
+<!-- Bootstrap JS Script -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
 {% endblock %}

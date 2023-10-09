@@ -8,35 +8,42 @@
 
     <div class="container mt-5">
        <div class="border rounded p-4 m-4">
-           <p class="display-4 text-center"><b>Your Wishlist</b></p>
-           <table class="table">
-               <thead>
-               <tr>
-                   <th>Sno.</th>
-                   <th>Package</th>
-                   <th>Price</th>
-                   <th>Image</th>
-                   <th>Status</th>
-               </tr>
-               </thead>
-               <tbody>
-               {% for package in packages %}
-               <tr>
-                   <td>{{forloop.counter}}</td>
-                   <td>{{ package.name }}</td>
-                   <td>{{ package.price|currency }}</td>
-                   <td><img src="{{ package.image.url }}" alt="{{ package.name }}" style="max-width: 50px;"></td>
-                   <td class="text-center align-middle">
-                       {% if package.id in bookings %}
-                           Booked
-                       {% else %}
-                           <a href="{% url 'Details' package.id %}" class="btn btn-primary">Details</a>
-                       {% endif %}
-                   </td>
-               </tr>
-               {% endfor %}
-               </tbody>
-           </table>
+           <h2 class="display-4 text-center mb-4"><b>Your Wishlist</b></h2>
+           <div class="table-responsive">
+               <table class="table table-bordered table-hover">
+                   <thead class="table-dark">
+                   <tr>
+                       <th>Sno.</th>
+                       <th>Package</th>
+                       <th>Price</th>
+                       <th>Image</th>
+                       <th>Status</th>
+                   </tr>
+                   </thead>
+                   <tbody>
+                   {% for package in packages %}
+                   <tr>
+                       <td>{{forloop.counter}}</td>
+                       <td>{{ package.name }}</td>
+                       <td>{{ package.price|currency }}</td>
+                       <td>
+                           <img src="{{ package.image.url }}" alt="{{ package.name }}" style="max-width: 50px;" class="img-fluid">
+                       </td>
+                       <td class="text-center align-middle">
+                           {% if package.id in bookings %}
+                               <span class="badge bg-success">Booked</span>
+                           {% else %}
+                               <a href="{% url 'Details' package.id %}" class="btn btn-primary">Details</a>
+                           {% endif %}
+                       </td>
+                   </tr>
+                   {% endfor %}
+                   </tbody>
+               </table>
+           </div>
+           {% if not packages %}
+               <p class="text-center text-muted">Your wishlist is empty. Explore and add packages!</p>
+           {% endif %}
        </div>
     </div>
 

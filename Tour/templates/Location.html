@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locations</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("{% static 'files/Location.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+            padding-top: 50px; /* Adjusted top padding for fixed navbar */
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .card {
+            width: 18rem;
+            margin: 20px;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card img {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .read-more {
+            display: none;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        .read-more-btn {
+            cursor: pointer;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .read-more-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .card-title {
+            color: #007bff;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            color: #333;
+        }
+
+        /* Stylish search form */
+        form {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        button[type="submit"] {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="text-center">Locations</h2>
+
+    <!-- Stylish search form -->
+    <form method="GET" action="{% url 'Location' %}">
+        <input type="text" name="q" placeholder="Search locations">
+        <button type="submit">Search</button>
+    </form>
+
+    <div class="row">
+        {% for location in locations %}
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{{ location.image.url }}" class="card-img-top" alt="{{ location.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ location.name }}</h5>
+                        <p class="card-text">{{ location.description|truncatechars:100 }}</p>
+                        <p class="read-more" id="read-more-{{ location.id }}">{{ location.description }}</p>
+                        <button class="read-more-btn" onclick="toggleReadMore('{{ location.id }}')">Read More</button>
+                        <p class="card-text"><small class="text-muted">Country: {{ location.country.name }}</small></p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+
+        {% if query %}
+            <div class="col-md-12">
+                <p>Search results for '{{ query }}':</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function toggleReadMore(locationId) {
+        const readMoreContent = document.querySelector(`#read-more-${locationId}`);
+        const readMoreBtn = document.querySelector(`.read-more-btn`);
+
+        if (readMoreContent.style.display === 'none' || readMoreContent.style.display === '') {
+            readMoreContent.style.display = 'block';
+            readMoreBtn.innerText = 'Read Less';
+        } else {
+            readMoreContent.style.display = 'none';
+            readMoreBtn.innerText = 'Read More';
+        }
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>
